@@ -4,6 +4,7 @@ import br.com.letscode.compra.dto.CompraRequest;
 import br.com.letscode.compra.dto.CompraResponse;
 import br.com.letscode.compra.exceptions.BadRequest;
 import br.com.letscode.compra.exceptions.NotFound;
+import br.com.letscode.compra.kafka.SendKafkaMessage;
 import br.com.letscode.compra.model.Produto;
 import br.com.letscode.compra.service.CompraService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +25,9 @@ import javax.validation.Valid;
 public class CompraController {
 
     private final CompraService compraService;
+    public static Map<String, CompraRequest> compras = new HashMap<>();
+    private final SendKafkaMessage sendKafkaMessage;
+
 
     @GetMapping()
     public ResponseEntity<Object> listCompras(
@@ -43,6 +49,8 @@ public class CompraController {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");
         }
+        compras.put(compraRequest.getCpf(), compraRequest);
+        sendKafkaMessage.sendMessage(compraRequest);
         return ResponseEntity.ok(compraService.createCompra(compraRequest));
     }
 

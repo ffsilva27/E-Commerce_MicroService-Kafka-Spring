@@ -47,17 +47,17 @@ public class CompraService {
         compraRepository.save(compra);
 
         for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
-            Produto produto = ProdutoService.getProduct(entry.getKey());
-//            if (produto.isEmpty()){
-//                compraProdutoRepository.deleteAll(compra.getProdutos());
-//                compraRepository.delete(compra);
-//                throw new BadRequest("Produto não encontrado");
-//            }
-//            if (produto.get().getQtde_disponivel() < entry.getValue()) {
-//                compraProdutoRepository.deleteAll(compra.getProdutos());
-//                compraRepository.delete(compra);
-//                throw new BadRequest("Quantidade indisponível");
-//            }
+            Produto produto = ProdutoService.getProduct(entry);
+            if (produto==null){
+                compraProdutoRepository.deleteAll(compra.getProdutos());
+                compraRepository.delete(compra);
+                throw new BadRequest("Produto não encontrado");
+            }
+            if (produto.getQtde_disponivel() < entry.getValue()) {
+                compraProdutoRepository.deleteAll(compra.getProdutos());
+                compraRepository.delete(compra);
+                throw new BadRequest("Quantidade indisponível do produto: " + produto.getNome());
+            }
             CompraProdutoKey key = new CompraProdutoKey();
             key.setIdCompra(compra.getId());
             key.setIdProduto(produto.getId());

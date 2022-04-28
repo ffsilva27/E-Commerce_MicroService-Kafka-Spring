@@ -25,7 +25,7 @@ import java.util.Map;
 public class CompraController {
 
     private final CompraService compraService;
-    public static Map<String, CompraRequest> compras = new HashMap<>();
+    //public static Map<String, CompraRequest> compras = new HashMap<>();
     private final SendKafkaMessage sendKafkaMessage;
 
 
@@ -45,18 +45,14 @@ public class CompraController {
     }
 
     @PostMapping()
-    public ResponseEntity<CompraResponse> createProduct(@RequestBody @Valid CompraRequest compraRequest, BindingResult bindingResult) throws BadRequest {
+    @ResponseStatus(HttpStatus.OK)
+    public void createProduct(@RequestBody @Valid CompraRequest compraRequest, BindingResult bindingResult) throws BadRequest {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");
         }
-        compras.put(compraRequest.getCpf(), compraRequest);
-        sendKafkaMessage.sendMessage(compraRequest);
-        return ResponseEntity.ok(compraService.createCompra(compraRequest));
-    }
+        //compras.put(compraRequest.getCpf(), compraRequest);
+        compraService.enviaKafka(compraRequest);
 
-    @GetMapping("/teste")
-    public Produto teste(){
-        return compraService.teste();
     }
 
 }

@@ -3,6 +3,7 @@ package br.com.letscode.compra.service;
 import br.com.letscode.compra.dto.CompraRequest;
 import br.com.letscode.compra.dto.CompraResponse;
 import br.com.letscode.compra.exceptions.BadRequest;
+import br.com.letscode.compra.kafka.SendKafkaMessage;
 import br.com.letscode.compra.model.*;
 import br.com.letscode.compra.repository.CompraProdutoRepository;
 import br.com.letscode.compra.repository.CompraRepository;
@@ -24,6 +25,8 @@ public class CompraService {
 
     private final CompraRepository compraRepository;
     private final CompraProdutoRepository compraProdutoRepository;
+    private final SendKafkaMessage sendKafkaMessage;
+    private final String topic = "compra";
 
     public Page<CompraResponse> listByCPF(String cpf, Pageable pageable) {
         Specification<Compra> specification = Specification.where(null);
@@ -35,59 +38,57 @@ public class CompraService {
                 .map(CompraResponse::convert);
     }
 
-    @Transactional
-    public CompraResponse createCompra(CompraRequest compraRequest) throws BadRequest {
-        double sum_values = 0.0;
-
-        Compra compra = new Compra();
-        compra.setData_compra(compraRequest.getData());
-        compra.setCpf(compraRequest.getCpf());
-        compra.setValor_total_compra(0.0);
-
-        compraRepository.save(compra);
-
+    public boolean validaProduto(CompraRequest compraRequest) throws BadRequest {
+        int qtdeItens = compraRequest.getProdutos().size();
+        int qtdeComparacao = 0;
         for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
             Produto produto = ProdutoService.getProduct(entry);
-            if (produto==null){
-                compraProdutoRepository.deleteAll(compra.getProdutos());
-                compraRepository.delete(compra);
-                throw new BadRequest("Produto não encontrado");
+            if (produto!=null){
+                qtdeComparacao++;
             }
-            if (produto.getQtde_disponivel() < entry.getValue()) {
-                compraProdutoRepository.deleteAll(compra.getProdutos());
-                compraRepository.delete(compra);
-                throw new BadRequest("Quantidade indisponível do produto: " + produto.getNome());
-            }
-            CompraProdutoKey key = new CompraProdutoKey();
-            key.setIdCompra(compra.getId());
-            key.setIdProduto(produto.getId());
-
-            CompraProduto compraProduto = new CompraProduto();
-            compraProduto.setCompra(compra);
-            compraProduto.setProduto(produto);
-            compraProduto.setQuantidade(entry.getValue());
-            compraProduto.setCompraProdutoKey(key);
-
-            compraProdutoRepository.save(compraProduto);
-            compra.getProdutos().add(compraProduto);
-
-            sum_values += produto.getPreco()*entry.getValue();
+        }
+        return qtdeItens == qtdeComparacao;
         }
 
-        ProdutoService.updateQuantity(compraRequest.getProdutos());
-        compra.setValor_total_compra(sum_values);
+        public void enviaKafka(CompraRequest compraRequest) throws BadRequest {
+            if(validaProduto(compraRequest)){
+                double sum_values = 0.0;
 
-        if(compra.getValor_total_compra() == null){
-            throw new BadRequest("O campo produtos deve ser preenchido.");
+                Compra compra = new Compra();
+                compra.setData_compra(compraRequest.getData());
+                compra.setCpf(compraRequest.getCpf());
+                compra.setStatus("EM PROCESSAMENTO");
+                compra.setValor_total_compra(0.0);
+                compraRepository.save(compra);
+                for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
+                    Produto produto = ProdutoService.getProduct(entry);
+                    CompraProdutoKey key = new CompraProdutoKey();
+                    key.setIdCompra(compra.getId());
+                    key.setIdProduto(produto.getId());
+
+                    CompraProduto compraProduto = new CompraProduto();
+                    compraProduto.setCompra(compra);
+                    compraProduto.setProduto(produto);
+                    compraProduto.setQuantidade(entry.getValue());
+                    compraProduto.setCompraProdutoKey(key);
+
+                    compraProdutoRepository.save(compraProduto);
+                    compra.getProdutos().add(compraProduto);
+
+                    sum_values += produto.getPreco()*entry.getValue();
+
+                }
+
+                compra.setValor_total_compra(sum_values);
+
+                compraRepository.save(compra);
+
+                sendKafkaMessage.sendMessage(compraRequest);
+
+            }else{
+                throw new BadRequest("Codigo do produto invalido.");
+            }
         }
-
-        compraRepository.save(compra);
-
-        return CompraResponse.convert(compra);
     }
 
-    public Produto teste(){
-        return ProdutoService.getProduct2("A123");
-    }
 
-}

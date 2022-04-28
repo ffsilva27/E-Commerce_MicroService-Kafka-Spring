@@ -21,7 +21,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/produto/**").authenticated();
+                .antMatchers("/produto/**").permitAll();
     }
 
   @Bean

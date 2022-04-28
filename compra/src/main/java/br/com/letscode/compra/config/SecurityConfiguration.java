@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/compra/**").authenticated();
+                .antMatchers("/compra/**").permitAll();
     }
 
   @Bean

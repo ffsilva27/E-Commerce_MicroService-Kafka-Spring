@@ -1,7 +1,6 @@
 package br.com.letscode.compra.kafka;
 
 import br.com.letscode.compra.dto.CompraRequest;
-import br.com.letscode.compra.dto.CompraResponse;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -10,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -18,8 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
-
+public class kafkaConfig {
     @Value(value = "${kafka.address:localhost:9092}")
     private String kafkaAddress;
 
@@ -38,6 +38,7 @@ public class KafkaConfig {
 
     public ConsumerFactory<String, CompraRequest> consumerFactory() {
         JsonDeserializer<CompraRequest> deserializer = new JsonDeserializer<>(CompraRequest.class);
+        deserializer.addTrustedPackages("*");
 
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaAddress);
@@ -51,5 +52,4 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
-
 }

@@ -28,6 +28,9 @@ public class Compra {
     @Column(name = "valor_total_compra")
     private Double valor_total_compra;
 
+    @Column(name = "status")
+    private String status;
+
     @OneToMany(mappedBy = "compra")
     private List<CompraProduto> produtos =  new ArrayList<>();
 

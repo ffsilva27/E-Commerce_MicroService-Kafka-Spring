@@ -26,6 +26,7 @@ public class CompraService {
     private final CompraRepository compraRepository;
     private final CompraProdutoRepository compraProdutoRepository;
     private final SendKafkaMessage sendKafkaMessage;
+    private final ProdutoService produtoService;
 
     public Page<CompraResponse> listByCPF(String cpf, Pageable pageable) {
         Specification<Compra> specification = Specification.where(null);
@@ -49,7 +50,7 @@ public class CompraService {
 //        compraRepository.save(compra);
 //
 //        for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
-//            Produto produto = ProdutoService.getProduct(entry);
+//            Produto produto = produtoService.getProduct(entry);
 //            if (produto==null){
 //                compraProdutoRepository.deleteAll(compra.getProdutos());
 //                compraRepository.delete(compra);
@@ -76,7 +77,7 @@ public class CompraService {
 //            sum_values += produto.getPreco()*entry.getValue();
 //        }
 //
-//        ProdutoService.updateQuantity(compraRequest.getProdutos());
+//        produtoService.updateQuantity(compraRequest.getProdutos());
 //        compra.setValor_total_compra(sum_values);
 //
 //        if(compra.getValor_total_compra() == null){

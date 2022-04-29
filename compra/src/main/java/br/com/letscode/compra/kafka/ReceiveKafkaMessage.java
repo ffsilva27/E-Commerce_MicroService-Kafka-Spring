@@ -24,6 +24,7 @@ public class ReceiveKafkaMessage {
     private final String KAFKA_TOPIC = "COMPRA_TOPICO_PROCESSADA";
     private final CompraRepository compraRepository;
     private final CompraProdutoRepository compraProdutoRepository;
+    private final ProdutoService produtoService;
 
     @KafkaListener(topics = KAFKA_TOPIC, groupId = "group-1")
     public void listenTopicCreateCompra(CompraRequest compraRequest) throws BadRequest {
@@ -38,7 +39,7 @@ public class ReceiveKafkaMessage {
         compraRepository.save(compra);
 
         for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
-            Produto produto = ProdutoService.getProduct(entry);
+            Produto produto = produtoService.getProduct(entry);
             if (produto==null){
                 compraProdutoRepository.deleteAll(compra.getProdutos());
                 compraRepository.delete(compra);
@@ -65,7 +66,7 @@ public class ReceiveKafkaMessage {
             sum_values += produto.getPreco()*entry.getValue();
         }
 
-        ProdutoService.updateQuantity(compraRequest.getProdutos());
+        produtoService.updateQuantity(compraRequest.getProdutos());
         compra.setValor_total_compra(sum_values);
 
         if(compra.getValor_total_compra() == null){

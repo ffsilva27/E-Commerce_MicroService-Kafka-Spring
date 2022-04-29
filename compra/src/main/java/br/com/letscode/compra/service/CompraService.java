@@ -86,8 +86,4 @@ public class CompraService {
         return CompraResponse.convert(compra);
     }
 
-    public Produto teste(){
-        return ProdutoService.getProduct2("A123");
-    }
-
 }

@@ -1,10 +1,13 @@
 package br.com.letscode.compra.service;
 
 import br.com.letscode.compra.model.Produto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service
@@ -14,6 +17,7 @@ public class ProdutoService {
         WebClient client = WebClient.create("http://localhost:8081");
         return client.method(HttpMethod.GET)
                 .uri("/produto/{identifier}", identifier)
+                .header("Authorization", )
                 .retrieve()
                 .bodyToMono(Produto.class)
                 .block();

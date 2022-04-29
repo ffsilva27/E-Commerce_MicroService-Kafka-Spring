@@ -13,40 +13,34 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class ReceiveKafkaMessage {
 
-    public static final String KAFKA_TOPIC = "COMPRA_TOPICO";
     private final SendKafkaMessage sendKafkaMessage;
 
     private final CompraRepository compraRepository;
     private final CompraProdutoRepository compraProdutoRepository;
 
 
-    @KafkaListener(topics = KAFKA_TOPIC, groupId = "grupo-1")
+    @KafkaListener(topics = "topic-compra", groupId = "grupo-1")
     public void listenTopicCreateCompra(CompraRequest compraRequest) throws BadRequest {
-        Compra compra = compraRepository.findByCpf(compraRequest.getCpf());
+        List<Compra> compraList = compraRepository.findByCpf(compraRequest.getCpf());
+        Compra compra = compraList.get(compraList.size()-1);
         for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
             Produto produto = ProdutoService.getProduct(entry);
             if (produto.getQtde_disponivel() < entry.getValue()) {
-                compraProdutoRepository.deleteAll(compra.getProdutos());
-                compra.setStatus("CANCELADO");
+                //compraProdutoRepository.deleteAll(compra.getProdutos());
+                compra.setStatus("CANCELADO-ESTOQUE-INSUFICIENTE");
             }else{
                 compra.setStatus("CONCLUIDO");
+                ProdutoService.updateQuantity(compraRequest.getProdutos());
             }
         }
-
-        ProdutoService.updateQuantity(compraRequest.getProdutos());
-//
-//        if(compra.getValor_total_compra() == null){
-//            throw new BadRequest("O campo produtos deve ser preenchido.");
-//        }
-
         compraRepository.save(compra);
-        //sendKafkaMessage.sendMessage(compraRequest);
     }
 
 }

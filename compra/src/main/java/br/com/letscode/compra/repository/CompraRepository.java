@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Integer>, JpaSpecificationExecutor<Compra> {
 
-    Compra findByCpf(String cpf);
+    List<Compra> findByCpf(String cpf);
 
 }

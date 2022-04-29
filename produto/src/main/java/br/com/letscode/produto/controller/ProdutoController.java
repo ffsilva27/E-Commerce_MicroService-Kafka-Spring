@@ -47,7 +47,7 @@ public class ProdutoController {
     @PatchMapping
     @Authenticate
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateQuantity(@RequestBody Map<String, Integer> produtos) throws BadRequest {
+    public void updateQuantity(@RequestBody Map<String, Integer> produtos) throws BadRequest, NotFound {
         produtoService.updateQuantity(produtos);
     }
 }

@@ -14,11 +14,8 @@ public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    public void createAuthority(UserRequest userRequest, User user){
-        Authority authority = new Authority();
-
-        authority.setAuthorityKey(new AuthorityKey(userRequest.getUserName(), "ROLE_" + userRequest.getAuthority()));
-        authority.setUser(user);
+    public void createAuthority(User user, String role){
+        Authority authority = Authority.convert(user, "ROLE_" + role);
 
         authorityRepository.save(authority);
     }

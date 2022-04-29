@@ -1,5 +1,6 @@
 package br.com.letscode.compra.controller;
 
+import br.com.letscode.compra.annotation.Authenticate;
 import br.com.letscode.compra.dto.CompraRequest;
 import br.com.letscode.compra.dto.CompraResponse;
 import br.com.letscode.compra.exceptions.BadRequest;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class CompraController {
 
     private final CompraService compraService;
-    //public static Map<String, CompraRequest> compras = new HashMap<>();
+    public static Map<String, CompraRequest> compras = new HashMap<>();
     private final SendKafkaMessage sendKafkaMessage;
 
 
@@ -46,13 +47,12 @@ public class CompraController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
+    @Authenticate
     public void createProduct(@RequestBody @Valid CompraRequest compraRequest, BindingResult bindingResult) throws BadRequest {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");
         }
-        //compras.put(compraRequest.getCpf(), compraRequest);
         compraService.enviaKafka(compraRequest);
-
     }
 
 }

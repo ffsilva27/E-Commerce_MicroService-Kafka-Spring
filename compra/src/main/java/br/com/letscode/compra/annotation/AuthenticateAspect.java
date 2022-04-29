@@ -1,14 +1,17 @@
 package br.com.letscode.compra.annotation;
 
 import br.com.letscode.compra.dto.UserResponse;
+import br.com.letscode.compra.exceptions.NotFound;
 import br.com.letscode.compra.exceptions.Unauthorized;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,9 +31,10 @@ public class AuthenticateAspect {
                 .uri("/user/authenticate")
                 .header("Authorization", requestHeader)
                 .retrieve()
+                .onStatus(status -> status.value() == HttpStatus.UNAUTHORIZED.value(),
+                        response -> Mono.error(new Unauthorized("Produto não encontrado.")) )
                 .bodyToMono(UserResponse.class)
                 .block();
-
         if (userResponse != null){
             System.out.println(userResponse);
         } else {

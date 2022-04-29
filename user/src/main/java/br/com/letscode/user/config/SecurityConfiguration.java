@@ -44,6 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/health-check").authenticated()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/user").permitAll()
+                .antMatchers("/user/authenticate").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

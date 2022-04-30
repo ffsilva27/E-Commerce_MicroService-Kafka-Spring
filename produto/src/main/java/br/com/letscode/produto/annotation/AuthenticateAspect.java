@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,18 +25,14 @@ public class AuthenticateAspect {
         String requestHeader = request.getHeader("Authorization");
 
         WebClient client = WebClient.create("http://localhost:8083");
-        UserResponse userResponse = client.method(HttpMethod.POST)
+        UserResponse userResponse = client.method(HttpMethod.GET)
                 .uri("/user/authenticate")
                 .header("Authorization", requestHeader)
                 .retrieve()
+                .onStatus(status -> status.value() == HttpStatus.UNAUTHORIZED.value(),
+                        response -> Mono.error(new Unauthorized("Unauthorized")) )
                 .bodyToMono(UserResponse.class)
                 .block();
-
-        if (userResponse != null){
-            System.out.println(userResponse);
-        } else {
-            throw new Unauthorized("Unauthorized");
-        }
     }
 
 }

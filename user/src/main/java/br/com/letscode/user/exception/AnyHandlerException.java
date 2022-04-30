@@ -18,4 +18,12 @@ public class AnyHandlerException extends ResponseEntityExceptionHandler {
         ErroMsg erroMsg = new ErroMsg(errorDescription);
         return new ResponseEntity<>(erroMsg, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {UnauthorizedRequest.class})
+    public ResponseEntity<ErroMsg> handlerExceptionUnauthorized(Exception e, WebRequest request){
+        String errorDescription = e.getLocalizedMessage();
+        if(errorDescription == null) errorDescription = e.toString();
+        ErroMsg erroMsg = new ErroMsg(errorDescription);
+        return new ResponseEntity<>(erroMsg, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+    }
 }

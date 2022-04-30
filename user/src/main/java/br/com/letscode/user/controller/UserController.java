@@ -47,7 +47,7 @@ public class UserController {
         userService.createUser(userRequest);
     }
 
-    @PostMapping("/authenticate")
+    @GetMapping("/authenticate")
     public UserResponse login(HttpServletRequest request) {
         return tokenService.userToken(request.getHeader("Authorization").split(" ")[1]);
     }

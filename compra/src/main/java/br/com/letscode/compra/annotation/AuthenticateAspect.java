@@ -27,19 +27,14 @@ public class AuthenticateAspect {
         String requestHeader = request.getHeader("Authorization");
 
         WebClient client = WebClient.create("http://localhost:8083");
-        UserResponse userResponse = client.method(HttpMethod.POST)
+        UserResponse userResponse = client.method(HttpMethod.GET)
                 .uri("/user/authenticate")
                 .header("Authorization", requestHeader)
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.UNAUTHORIZED.value(),
-                        response -> Mono.error(new Unauthorized("Produto não encontrado.")) )
+                        response -> Mono.error(new Unauthorized("Unauthorized")) )
                 .bodyToMono(UserResponse.class)
                 .block();
-        if (userResponse != null){
-            System.out.println(userResponse);
-        } else {
-            throw new Unauthorized("Unauthorized");
-        }
     }
 
 }

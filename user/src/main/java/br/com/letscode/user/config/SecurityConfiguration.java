@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/health-check").authenticated()
-                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/login").permitAll()
                 .antMatchers("/user").permitAll()
                 .antMatchers("/user/authenticate").authenticated()
                 .and()

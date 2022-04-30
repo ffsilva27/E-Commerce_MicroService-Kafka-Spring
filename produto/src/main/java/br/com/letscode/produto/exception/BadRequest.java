@@ -1,6 +1,6 @@
 package br.com.letscode.produto.exception;
 
-public class BadRequest extends Exception{
+public class BadRequest extends Exception {
     public BadRequest(String msg){
         super(msg);
     }

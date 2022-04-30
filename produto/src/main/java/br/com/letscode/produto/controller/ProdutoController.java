@@ -1,5 +1,6 @@
 package br.com.letscode.produto.controller;
 
+import br.com.letscode.produto.annotation.Authenticate;
 import br.com.letscode.produto.dto.ProdutoRequest;
 import br.com.letscode.produto.dto.ProdutoResponse;
 import br.com.letscode.produto.exception.BadRequest;
@@ -23,11 +24,13 @@ public class ProdutoController {
     ProdutoService produtoService;
 
     @GetMapping
+    @Authenticate
     public ResponseEntity<Object> getAll(Produto produto) throws NotFound {
         return ResponseEntity.ok(produtoService.listByCodigo(produto));
     }
 
     @PostMapping
+    @Authenticate
     public ResponseEntity<ProdutoResponse> createProduct(@RequestBody @Valid ProdutoRequest produtoRequest, BindingResult bindingResult) throws BadRequest {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");
@@ -36,13 +39,15 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
+    @Authenticate
     public Produto getProduct(@PathVariable String id) throws NotFound {
         return produtoService.findByCodigo(id).orElseThrow(()->new NotFound("Produto não encontrado."));
     }
 
     @PatchMapping
+    @Authenticate
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateQuantity(@RequestBody Map<String, Integer> produtos) throws BadRequest {
+    public void updateQuantity(@RequestBody Map<String, Integer> produtos) throws BadRequest, NotFound {
         produtoService.updateQuantity(produtos);
     }
 }

@@ -21,7 +21,9 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setEnabled(true);
 
-        userRepository.save(user);
-        authorityService.createAuthority(userRequest, user);
+        final User userDB = userRepository.save(user);
+
+        userRequest.getAuthority().forEach(a -> authorityService.createAuthority(userDB, a));
     }
+
 }

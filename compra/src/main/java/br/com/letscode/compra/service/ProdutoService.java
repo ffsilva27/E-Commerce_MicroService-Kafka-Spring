@@ -14,10 +14,11 @@ import java.util.Map;
 @Service
 public class ProdutoService {
 
-    public static Produto getProduct(Map.Entry<String,Integer> entry) throws BadRequest {
+    public static Produto getProduct(Map.Entry<String,Integer> entry, String token) throws BadRequest {
         WebClient client = WebClient.create("http://localhost:8081");
         Produto produtoMono = client.method(HttpMethod.GET)
                 .uri("/produto/{identifier}", entry.getKey())
+                .header("Authorization", token)
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),
                         response -> Mono.error(new NotFound("Produto não encontrado.")))
@@ -26,11 +27,12 @@ public class ProdutoService {
         return produtoMono;
     }
 
-    public static void updateQuantity(Map<String, Integer> produtos) {
+    public static void updateQuantity(Map<String, Integer> produtos, String token) {
         WebClient client = WebClient.create("http://localhost:8081");
         client
                 .patch()
                 .uri("/produto")
+                .header("Authorization", token)
                 .bodyValue(produtos)
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),
@@ -39,12 +41,4 @@ public class ProdutoService {
                 .block();
     }
 
-    public static Produto getProduct2(String identifier) {
-        WebClient client = WebClient.create("http://localhost:8081");
-        return client.method(HttpMethod.GET)
-                .uri("/produto/{identifier}", identifier)
-                .retrieve()
-                .bodyToMono(Produto.class)
-                .block();
-    }
 }

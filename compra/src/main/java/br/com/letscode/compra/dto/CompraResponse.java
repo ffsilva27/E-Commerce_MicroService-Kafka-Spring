@@ -17,6 +17,7 @@ public class CompraResponse {
     private LocalDateTime data_compra;
     private String cpf_cliente;
     private Double valor_total_compra;
+    private String status;
     private List<CompraProdutoResponse> produtos = new ArrayList<>();
 
     public static CompraResponse convert(Compra compra){
@@ -24,6 +25,7 @@ public class CompraResponse {
         compraReturn.setData_compra(compra.getData_compra());
         compraReturn.setCpf_cliente(compra.getCpf());
         compraReturn.setValor_total_compra(compra.getValor_total_compra());
+        compraReturn.setStatus(compra.getStatus());
         compraReturn.getProdutos().addAll(compra.getProdutos().stream().map(CompraProdutoResponse::convert).collect(Collectors.toList()));
         return compraReturn;
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter @Setter
 public class UserRequest {
@@ -12,5 +13,7 @@ public class UserRequest {
     @NotNull
     private String password;
     @NotNull
-    private String authority;
+    private Boolean enabled;
+    @NotNull
+    private List<String> authority;
 }

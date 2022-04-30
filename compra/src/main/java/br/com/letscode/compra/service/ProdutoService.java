@@ -19,11 +19,11 @@ public class ProdutoService {
     @Autowired
     private HttpServletRequest request;
 
-    public Produto getProduct(Map.Entry<String,Integer> entry) throws BadRequest {
+    public static Produto getProduct(Map.Entry<String,Integer> entry) throws BadRequest {
         WebClient client = WebClient.create("http://localhost:8081");
         Produto produtoMono = client.method(HttpMethod.GET)
                 .uri("/produto/{identifier}", entry.getKey())
-                .header("Authorization",request.getHeader("Authorization"))
+                //.header("Authorization",request.getHeader("Authorization"))
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),
                         response -> Mono.error(new NotFound("Produto não encontrado.")))
@@ -32,12 +32,12 @@ public class ProdutoService {
         return produtoMono;
     }
 
-    public void updateQuantity(Map<String, Integer> produtos) {
+    public static void updateQuantity(Map<String, Integer> produtos) {
         WebClient client = WebClient.create("http://localhost:8081");
         client
                 .patch()
                 .uri("/produto")
-                .header("Authorization",request.getHeader("Authorization"))
+                //header("Authorization",request.getHeader("Authorization"))
                 .bodyValue(produtos)
                 .retrieve()
                 .onStatus(status -> status.value() == HttpStatus.NOT_FOUND.value(),

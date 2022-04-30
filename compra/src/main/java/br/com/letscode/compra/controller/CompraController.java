@@ -26,8 +26,8 @@ import java.util.Map;
 public class CompraController {
 
     private final CompraService compraService;
-    public static Map<String, CompraRequest> compras = new HashMap<>();
-    private final SendKafkaMessage sendKafkaMessage;
+//    public static Map<String, CompraRequest> compras = new HashMap<>();
+//    private final SendKafkaMessage sendKafkaMessage;
 
 
     @GetMapping()
@@ -47,7 +47,7 @@ public class CompraController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    @Authenticate
+    //@Authenticate
     public void createProduct(@RequestBody @Valid CompraRequest compraRequest, BindingResult bindingResult) throws BadRequest {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");

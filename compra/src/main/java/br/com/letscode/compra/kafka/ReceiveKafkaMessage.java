@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ReceiveKafkaMessage {
 
-    private final ProdutoService produtoService;
+   // private final ProdutoService produtoService;
     private final CompraRepository compraRepository;
 
 
@@ -27,13 +27,13 @@ public class ReceiveKafkaMessage {
         List<Compra> compraList = compraRepository.findByCpf(compraRequest.getCpf());
         Compra compra = compraList.get(compraList.size()-1);
         for (Map.Entry<String,Integer> entry : compraRequest.getProdutos().entrySet()){
-            Produto produto = produtoService.getProduct(entry);
+            Produto produto = ProdutoService.getProduct(entry);
             if (produto.getQtde_disponivel() < entry.getValue()) {
                 //compraProdutoRepository.deleteAll(compra.getProdutos());
                 compra.setStatus("CANCELADO-ESTOQUE-INSUFICIENTE");
             }else{
                 compra.setStatus("CONCLUIDO");
-                produtoService.updateQuantity(compraRequest.getProdutos());
+                ProdutoService.updateQuantity(compraRequest.getProdutos());
             }
         }
         compraRepository.save(compra);

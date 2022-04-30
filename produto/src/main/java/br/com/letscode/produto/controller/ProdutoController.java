@@ -24,13 +24,13 @@ public class ProdutoController {
     ProdutoService produtoService;
 
     @GetMapping
-    @Authenticate
+    //@Authenticate
     public ResponseEntity<Object> getAll(Produto produto) throws NotFound {
         return ResponseEntity.ok(produtoService.listByCodigo(produto));
     }
 
     @PostMapping
-    @Authenticate
+    //@Authenticate
     public ResponseEntity<ProdutoResponse> createProduct(@RequestBody @Valid ProdutoRequest produtoRequest, BindingResult bindingResult) throws BadRequest {
         if(bindingResult.hasErrors()){
             throw new BadRequest("O campo " + bindingResult.getFieldError().getField() + " deve ser preenchido.");
@@ -39,13 +39,13 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    @Authenticate
+    //@Authenticate
     public Produto getProduct(@PathVariable String id) throws NotFound {
         return produtoService.findByCodigo(id).orElseThrow(()->new NotFound("Produto não encontrado."));
     }
 
     @PatchMapping
-    @Authenticate
+    //@Authenticate
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateQuantity(@RequestBody Map<String, Integer> produtos) throws BadRequest, NotFound {
         produtoService.updateQuantity(produtos);

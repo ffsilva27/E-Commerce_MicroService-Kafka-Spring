@@ -47,7 +47,7 @@ ________________________________________________________________________________
 
 
 #### :chart: Criação de usuário
-Todas as rotas devem possuir autenticação, sendo assim para acessa-las o usuário deve possuir cadastro e efetuar o login para que possa usar o token JWT no header da requisição com topico "Authorization" e valor "Bearer <token jwt>" .
+Todas as rotas devem possuir autenticação, sendo assim para acessa-las o usuário deve possuir cadastro e efetuar o login para que possa usar o token JWT no header da requisição com topico "Authorization" e valor "Bearer {token_jwt}" .
 
 <br>
 

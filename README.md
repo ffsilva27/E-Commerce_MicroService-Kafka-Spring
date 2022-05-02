@@ -45,6 +45,49 @@ ________________________________________________________________________________
 
 ### :man_technologist: Implementações
 
+
+#### :chart: Criação de usuário
+Todas as rotas devem possuir autenticação, sendo assim para acessa-las o usuário deve possuir cadastro e efetuar o login para que possa usar o token JWT no header da requisição com topico "Authorization" e valor "Bearer <token jwt>" .
+
+<br>
+
+As informações para a realização do cadastro do usuário em sistema são: nome de usuário, senha e nível de autoridade.
+
+##### Método HTTP para criação do produto/JSON
+ - (POST) `localhost:8083/user`
+```json
+{
+  "userName": "user04",
+  "password": "user04",
+  "authority": ["CLIENTE", "ADMIN"],
+  "enabled": true
+}
+```
+
+##### Retorno da aplicação
+`Status Code - 201 - Created`
+
+<br>
+
+#### :chart: Login
+
+##### Método HTTP para criação do produto/JSON
+ - (POST) `localhost:8083/user/login`
+```json
+{
+  "userName": "user04",
+  "password": "user04"
+}
+```
+
+##### Retorno da aplicação/JSON
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNeUFQUCIsInN1YiI6InVzZXIwNCIsImlhdCI6MTY1MTM0NjQxOSwiZXhwI
+  joxNjUxMzUwMDE5LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.OcM8L7vLKrBKUBM9uwJQAFuD7PVJuOEH8OW7ksXCK2I"
+}
+```
+
 #### :chart: Criar produtos
 O produto deve conter os seguintes dados: código do produto (implementado lógica para geração pela aplicação), preço e quantidade disponível.
 
@@ -199,49 +242,6 @@ Obs.: Para obtenção das informações de compra sobre um cliente específico, 
 	"first": true,
 	"numberOfElements": 1,
 	"empty": false
-}
-```
-
-
-#### :chart: Criação de usuário
-Todas as rotas devem possuir autenticação, sendo assim para acessa-las o usuário deve possuir cadastro e efetuar o login.
-
-<br>
-
-As informações para a realização do cadastro do usuário em sistema são: nome de usuário, senha e nível de autoridade.
-
-##### Método HTTP para criação do produto/JSON
- - (POST) `localhost:8083/user`
-```json
-{
-  "userName": "user04",
-  "password": "user04",
-  "authority": ["CLIENTE", "ADMIN"],
-  "enabled": true
-}
-```
-
-##### Retorno da aplicação
-`Status Code - 201 - Created`
-
-<br>
-
-#### :chart: Login
-
-##### Método HTTP para criação do produto/JSON
- - (POST) `localhost:8083/user/login`
-```json
-{
-  "userName": "user04",
-  "password": "user04"
-}
-```
-
-##### Retorno da aplicação/JSON
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJNeUFQUCIsInN1YiI6InVzZXIwNCIsImlhdCI6MTY1MTM0NjQxOSwiZXhwI
-  joxNjUxMzUwMDE5LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.OcM8L7vLKrBKUBM9uwJQAFuD7PVJuOEH8OW7ksXCK2I"
 }
 ```
 

@@ -5,6 +5,9 @@
 O módulo possibilitou desenvolvermos uma aplicação utilizando a arquitetura de micro serviços e serviço de mensageria(Kafka), além de apliarmos nossos conhecimentos
 quanto ao padrão de arquitetura REST, as funcionalidades do Spring data JPA, MVC e Security e o banco de dados relacional(PostgreSQL).
 
+
+Obs.: Para o correto funcionamento, os 03 micro serviços(User | Compra e Produto) e o kafka precisam estar em execução.
+
 ___________________________________________________________________________________________________________________________________________________________________
 
 ### :scroll: Atividade

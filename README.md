@@ -6,7 +6,7 @@ O módulo possibilitou desenvolvermos uma aplicação utilizando a arquitetura d
 quanto ao padrão de arquitetura REST, as funcionalidades do Spring data JPA, MVC e Security e o banco de dados relacional(PostgreSQL).
 
 
-Obs.: Para o correto funcionamento, os 03 micro serviços(User, Compra e Produto) e o kafka precisam estar em execução.
+Obs.: Para o correto funcionamento, rode o script de criação das tabelas do BD(CreateDataBase.txt), os 03 micro serviços(User, Compra e Produto) e o kafka precisam estar em execução.
 
 ___________________________________________________________________________________________________________________________________________________________________
 

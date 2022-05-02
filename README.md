@@ -1,12 +1,12 @@
 # :man_technologist: Curso Web Full Stack - Let's Code :man_student:
 
-## Projeto Módulo 10 - Tópicos Avançados (Micro Serviço | Mensageria-Kafka | BD-PostgreSQL) :rocket:
+## :rocket: Projeto Módulo 10 - Tópicos Avançados (Micro Serviço | Mensageria-Kafka | BD-PostgreSQL) 
 
 O módulo possibilitou desenvolvermos uma aplicação utilizando a arquitetura de micro serviços e serviço de mensageria(Kafka), além de apliarmos nossos conhecimentos
 quanto ao padrão de arquitetura REST, as funcionalidades do Spring data JPA, MVC e Security e o banco de dados relacional(PostgreSQL).
 
 
-Obs.: Para o correto funcionamento, os 03 micro serviços(User | Compra e Produto) e o kafka precisam estar em execução.
+Obs.: Para o correto funcionamento, os 03 micro serviços(User, Compra e Produto) e o kafka precisam estar em execução.
 
 ___________________________________________________________________________________________________________________________________________________________________
 
@@ -21,6 +21,8 @@ Construção de uma API que possibilite:
  - Informar, na rota acima, dados da compra conforme filtro pelo cpf;
  - Criação de usuário (utilizando criptografia - BCrypt);
  - Proteção das rotas possibilitando acesso apenas por usuários cadastrados.
+
+<br>
 
 #### Requisitos funcionais
 Na API implementamos:
